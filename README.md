@@ -6,7 +6,7 @@
 
 ## 需要安裝
 
-- .NET 10 SDK
+- .NET 10 SDK（版本固定在 `global.json`）
 - Docker Desktop
 
 ## 在本機執行
