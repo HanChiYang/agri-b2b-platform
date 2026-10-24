@@ -20,6 +20,7 @@
 | [0009](0009-no-inventory-tracking-in-v1.md) | 第一版不管理庫存 | 已接受 |
 | [0010](0010-admin-accounts-with-equal-permissions.md) | 可以有多位管理員，權限都相同 | 已接受 |
 | [0011](0011-spec-first-tdd-and-ci.md) | 先寫規格和測試再實作，並由 CI 把關 | 已接受 |
+| [0012](0012-fresh-context-review.md) | 完成前交給沒有上下文的 agent 審查 | 已接受 |
 
 ## 範本
 

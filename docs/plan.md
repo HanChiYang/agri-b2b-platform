@@ -62,6 +62,7 @@
 | 本機開發資料庫 | Docker Compose | |
 | 測試 | xUnit + Testcontainers（跑真的 PostgreSQL） | |
 | 開發流程 | 先寫規格和測試再實作（`docs/specs/`） | [0011](adr/0011-spec-first-tdd-and-ci.md) |
+| 審查 | 完成前交給沒有上下文的 agent，對照規格並找 bug | [0012](adr/0012-fresh-context-review.md) |
 | 程式碼檢查 | 警告視為錯誤、.NET 程式碼分析規則、`.editorconfig` | [0011](adr/0011-spec-first-tdd-and-ci.md) |
 | CI | GitHub Actions：每個 PR 檢查格式、建置和測試 | [0011](adr/0011-spec-first-tdd-and-ci.md) |
 | 前端 | React 或 Vue，待定 | |
