@@ -22,6 +22,7 @@
 | [0011](0011-spec-first-tdd-and-ci.md) | 先寫規格和測試再實作，並由 CI 把關 | 已接受 |
 | [0012](0012-fresh-context-review.md) | 完成前交給沒有上下文的 agent 審查 | 已接受 |
 | [0013](0013-hook-enforced-spec-confirmation.md) | 用 hook 確保規格經過使用者確認，才開始寫測試和程式 | 已接受 |
+| [0014](0014-changes-after-spec-confirmation.md) | 規格確認之後的修改流程 | 已接受 |
 
 ## 範本
 
