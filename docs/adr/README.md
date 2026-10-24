@@ -1,0 +1,46 @@
+# 架構決策紀錄（ADR）
+
+這裡記錄專案中重要的決策，以及當時為什麼這樣決定。
+
+- 「提議中」的 ADR 可以直接修改
+- 「已接受」的 ADR 不再修改；決策改變時新增一份 ADR，並把舊的狀態改成「已被 ADR-XXXX 取代」
+
+## 清單
+
+| 編號 | 標題 | 狀態 |
+|---|---|---|
+| [0001](0001-web-api-and-separate-frontend.md) | 前後端分離：ASP.NET Core Web API + 獨立前端 | 已接受 |
+| [0002](0002-postgresql-and-ef-core.md) | 資料庫使用 PostgreSQL，透過 EF Core 存取 | 已接受 |
+| [0003](0003-admin-created-distributor-accounts.md) | 經銷商帳號由管理員在後台建立 | 已接受 |
+| [0004](0004-orders-without-payment-gateway.md) | 不串接金流，系統只處理訂單 | 已接受 |
+| [0005](0005-jwt-authentication.md) | 使用 JWT 認證，分管理員與經銷商兩種角色 | 已接受 |
+| [0006](0006-single-api-project.md) | 單一 API 專案，依功能分資料夾 | 已接受 |
+| [0007](0007-product-package-variants.md) | 商品與包裝規格分開儲存 | 已接受 |
+| [0008](0008-prices-visible-after-login.md) | 商品與價格要登入才看得到 | 已接受 |
+| [0009](0009-no-inventory-tracking-in-v1.md) | 第一版不管理庫存 | 已接受 |
+| [0010](0010-admin-accounts-with-equal-permissions.md) | 可以有多位管理員，權限都相同 | 已接受 |
+
+## 範本
+
+```markdown
+# ADR-XXXX：標題
+
+- 狀態：提議中
+- 日期：YYYY-MM-DD
+
+## 背景
+
+為什麼需要做這個決定，當時有哪些限制。
+
+## 決策
+
+決定怎麼做。
+
+## 考慮過的其他方案
+
+- 方案：為什麼沒選
+
+## 影響
+
+這個決定帶來的好處、代價，以及之後要注意的事。
+```
