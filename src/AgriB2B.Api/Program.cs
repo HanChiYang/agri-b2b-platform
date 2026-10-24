@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using AgriB2B.Api.Data;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 const string FrontendCorsPolicy = "Frontend";

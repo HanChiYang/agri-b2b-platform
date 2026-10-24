@@ -1,0 +1,36 @@
+# 程式碼格式設定。編輯器、dotnet format 和建置都會依這份檢查
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{json,yml,yaml,csproj,props,slnx,xml}]
+indent_size = 2
+
+[*.cs]
+# 格式不符合時建置失敗，執行 dotnet format 可以自動修正
+dotnet_diagnostic.IDE0055.severity = warning
+
+# using 排序：System 開頭的放最前面
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# 命名空間用檔案範圍的寫法
+csharp_style_namespace_declarations = file_scoped
+dotnet_diagnostic.IDE0161.severity = warning
+
+# 只在建構時指定的欄位要加 readonly
+dotnet_style_readonly_field = true
+dotnet_diagnostic.IDE0044.severity = warning
+
+[tests/**.cs]
+# 測試的命名慣例和一般程式碼不同，所以關掉這兩條規則：
+# - CA1707：測試方法名稱用底線分段，例如 Health_ReturnsHealthy_WhenDatabaseIsReachable
+# - CA1711：xUnit 的測試群組類別習慣以 Collection 結尾，例如 ApiCollection
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1711.severity = none

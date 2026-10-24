@@ -6,6 +6,7 @@
 - 重要決策：`docs/adr/`
 - 建置：`dotnet build AgriB2B.slnx`
 - 測試：`dotnet test AgriB2B.slnx`（會用 Testcontainers 啟動 PostgreSQL，需要先開 Docker Desktop）
+- 修正格式：`dotnet format AgriB2B.slnx`
 
 ## Git 流程（一定要遵守）
 
@@ -20,7 +21,21 @@
 - PR 合併後：`git switch main && git pull`，再刪掉本機的 branch
 - `.claude/hooks/require-feature-branch.mjs` 會擋下不在 `feature/`、`fix/` branch 上的檔案修改與 commit，也會擋下 push 到 `main`；其餘的 `git commit`、`git push` 會跳出確認視窗，由使用者決定是否允許
 
-## 開發慣例
+## 開發流程：規格 → 測試 → 實作（一定要遵守）
 
-- 每個階段完成時都要附上整合測試，並在 `docs/plan.md` 把完成的項目打勾
+每個階段或功能都照這個順序做，不可以跳步。原因見 `docs/adr/0011-spec-first-tdd-and-ci.md`。
+
+1. **寫規格**：從 `docs/specs/_template.md` 複製，寫成 `docs/specs/<branch 名稱去掉 feature/>.md`，並加進 `docs/specs/README.md` 的清單。驗收條件要編號（AC-1、AC-2…）。寫完就停下來請使用者確認；**使用者同意之前，不寫測試和程式**。使用者同意後，把狀態改成「已確認」
+2. **先寫測試**：每條驗收條件至少對應一個整合測試，用 `[Fact(DisplayName = "AC-1：…")]` 標出編號。寫完執行一次，確認新的測試是因為功能還沒做而失敗，不是因為測試本身寫錯。為了讓測試能編譯，可以先建立空的類別或方法
+3. **實作**：寫到全部測試通過。**不可以為了讓測試通過而修改或刪除測試。** 覺得測試或規格有錯，或遇到規格沒寫到的情況，先停下來問使用者；同意後先改規格，再改測試
+4. **收尾**：執行 `dotnet format AgriB2B.slnx`，確認 `dotnet build`、`dotnet test` 都通過；在 `docs/plan.md` 打勾，規格狀態改成「已完成」，再 commit、push
+
+## 品質檢查
+
+- 建置時警告一律視為錯誤，並啟用 .NET 建議的程式碼分析規則（`Directory.Build.props`）；格式規則寫在 `.editorconfig`
+- **不可以為了讓建置通過而關掉檢查**，例如 `#pragma warning disable`、`[SuppressMessage]`、調低 `.editorconfig` 的規則等級。真的需要關掉某條規則時，先問使用者，並在設定旁邊寫明原因
+- GitHub Actions（`.github/workflows/ci.yml`）會在每個 PR 檢查格式、建置和測試，沒通過就不能合併
+
+## 其他慣例
+
 - 重要決策寫成 ADR，放在 `docs/adr/`，並更新 `docs/adr/README.md` 的清單

@@ -61,6 +61,9 @@
 | API 文件 | 內建 OpenAPI + Scalar 測試頁 | |
 | 本機開發資料庫 | Docker Compose | |
 | 測試 | xUnit + Testcontainers（跑真的 PostgreSQL） | |
+| 開發流程 | 先寫規格和測試再實作（`docs/specs/`） | [0011](adr/0011-spec-first-tdd-and-ci.md) |
+| 程式碼檢查 | 警告視為錯誤、.NET 程式碼分析規則、`.editorconfig` | [0011](adr/0011-spec-first-tdd-and-ci.md) |
+| CI | GitHub Actions：每個 PR 檢查格式、建置和測試 | [0011](adr/0011-spec-first-tdd-and-ci.md) |
 | 前端 | React 或 Vue，待定 | |
 
 ## 5. 功能規格
@@ -300,7 +303,7 @@ erDiagram
 
 ## 8. 開發順序與待辦
 
-每個階段完成時都要附上整合測試，再進下一個階段。
+每個階段開工前先寫規格（`docs/specs/`），使用者確認後先寫測試再實作，流程見 [ADR-0011](adr/0011-spec-first-tdd-and-ci.md)。每個階段完成時都要附上整合測試，再進下一個階段。
 
 ### 階段 0：準備
 
@@ -316,6 +319,8 @@ erDiagram
 - [x] 統一的錯誤回應格式（ProblemDetails）
 - [x] 健康檢查 `/health`
 - [x] CORS 設定（給之後的前端用）
+- [x] 程式碼檢查：警告視為錯誤、程式碼分析規則、`.editorconfig`
+- [x] CI：GitHub Actions 在每個 PR 檢查格式、建置和測試
 
 完成標準：執行 `docker compose up` 和 `dotnet run` 後，可以打開 API 文件頁，健康檢查顯示資料庫連線正常。
 

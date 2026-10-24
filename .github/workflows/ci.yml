@@ -1,0 +1,38 @@
+# 每個 PR 和 main 的每次更新都會自動檢查：格式、建置（警告視為錯誤）、整合測試。說明見 docs/adr/0011
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: 還原套件
+        run: dotnet restore AgriB2B.slnx
+
+      - name: 檢查格式
+        run: dotnet format AgriB2B.slnx --verify-no-changes --no-restore
+
+      - name: 建置
+        run: dotnet build AgriB2B.slnx --no-restore --configuration Release
+
+      # 整合測試用 Testcontainers 啟動 PostgreSQL，GitHub 的 Ubuntu 機器已經有 Docker
+      - name: 測試
+        run: dotnet test AgriB2B.slnx --no-build --configuration Release
