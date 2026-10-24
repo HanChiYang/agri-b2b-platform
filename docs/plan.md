@@ -176,7 +176,6 @@ erDiagram
         string email
         string address
         string note "內部備註"
-        bool is_active
     }
     Category {
         int id PK
@@ -233,7 +232,6 @@ erDiagram
         string to_status
         int changed_by FK
         string note
-        datetime changed_at
     }
     SiteContent {
         int id PK
@@ -251,6 +249,9 @@ erDiagram
 - 金額用 `numeric(12,2)`，C# 端用 `decimal`
 - 資料表和欄位名稱用 snake_case
 - 帳號（User）和經銷商資料（Distributor）分開存：一家經銷商對應一個帳號，管理員帳號沒有經銷商資料
+- 經銷商是否停用，看對應帳號的 `users.is_active`，經銷商資料不另外存
+- 狀態歷程的變更時間就是 `created_at`，不另外存
+- 欄位長度、必填等細節見[階段 2 規格](specs/phase-2-data-model.md)
 
 ## 7. API 草稿
 
@@ -332,6 +333,10 @@ erDiagram
 - [ ] 建立第一個 migration
 
 完成標準：migration 可以在空的資料庫建立所有資料表。
+
+階段 2 合併之後、階段 3 開工之前，另開 branch 做：
+
+- [ ] 把寫規格的步驟寫成 Claude Code 的 skill（用內建的 `skill-creator`），附上階段 2 的規格當範例。先回顧這次寫規格時漏掉或卡住的地方，寫進 skill 的步驟。這是 [ADR-0011](adr/0011-spec-first-tdd-and-ci.md) 的計畫：流程從階段 2 開始試行，順利的話再寫成 skill
 
 ### 階段 3：認證
 

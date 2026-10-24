@@ -1,6 +1,6 @@
 # 規格：資料模型與第一個 migration
 
-- 狀態：草稿
+- 狀態：已確認
 - 對應：`docs/plan.md` 階段 2
 - Branch：`feature/phase-2-data-model`
 - 相關 ADR：[0002](../adr/0002-postgresql-and-ef-core.md)、[0005](../adr/0005-jwt-authentication.md)、[0006](../adr/0006-single-api-project.md)、[0007](../adr/0007-product-package-variants.md)
@@ -25,6 +25,10 @@
 - 初始資料：預設管理員在階段 3，公司簡介在階段 7
 - 商業邏輯，例如帳號轉小寫、密碼雜湊、產生訂單編號（之後各階段處理）
 - 搜尋用的索引（階段 5 做商品搜尋時，再依需要加）
+
+## 影響到的既有規格
+
+無
 
 ## 規格內容
 
@@ -75,6 +79,8 @@
 | address | 文字 200 | 下單時預設帶入的收件地址 |
 | note | 文字 500，選填 | 內部備註 |
 
+統一編號必填、不能重複：經銷商都是有統一編號的公司，也可以防止同一家公司被建立兩次。
+
 **categories**：商品分類
 
 | 欄位 | 型別 | 說明 |
@@ -89,13 +95,15 @@
 |---|---|---|
 | category_id | 外鍵 → categories | |
 | name | 文字 100 | 商品名稱 |
-| license_no | 文字 50，選填 | 農藥許可證字號 |
-| active_ingredient | 文字 200，選填 | 有效成分 |
-| formulation | 文字 50，選填 | 劑型 |
-| manufacturer | 文字 100，選填 | 廠商 |
+| license_no | 文字 50 | 農藥許可證字號 |
+| active_ingredient | 文字 200 | 有效成分 |
+| formulation | 文字 50 | 劑型 |
+| manufacturer | 文字 100 | 廠商 |
 | description | 不限長度文字，選填 | 說明 |
 | image_path | 文字 300，選填 | 主圖 |
 | is_active | 布林 | |
+
+許可證字號、有效成分、劑型、廠商必填：第一版只賣農藥。之後要賣肥料、資材等沒有許可證的商品時，再改成選填；從必填放寬成選填只要一個簡單的 migration，反過來則要先補齊舊資料。
 
 **product_variants**：包裝規格
 
@@ -154,7 +162,7 @@
 
 ### 和 plan 第 6 節不同的地方
 
-確認後，會一併更新 `docs/plan.md` 第 6 節的 ER 圖：
+已一併更新 `docs/plan.md` 第 6 節的 ER 圖：
 
 - `distributors` 不另外存 `is_active`，改用對應帳號的 `users.is_active`。一家經銷商只有一個帳號，存兩份可能會不一致
 - `order_status_histories` 不另外存 `changed_at`，改用 `created_at`，避免兩個欄位重複
@@ -166,7 +174,7 @@
 
 ## 驗收條件
 
-每一條都要有整合測試，測試用 `[Fact(DisplayName = "AC-1：…")]` 標出編號。
+每一條都要有整合測試，測試用 `[Fact(DisplayName = "AC-1：…")]` 標出編號，測試類別加上 `[Trait("Spec", "phase-2-data-model")]`。
 
 | 編號 | 情況 | 動作 | 預期結果 |
 |---|---|---|---|
@@ -188,6 +196,4 @@
 
 ## 待確認
 
-1. **商品的許可證字號、有效成分、劑型、廠商要必填嗎？** 目前寫選填，因為如果之後也賣肥料、資材，這些商品沒有許可證。如果確定只賣農藥，改成必填比較不會漏填
-2. **統一編號要必填而且不能重複嗎？** 目前寫必填、不能重複。如果會有沒有統一編號的經銷商，改成選填
-3. **套用 migration 的方式**：Development、Testing 環境啟動時自動套用，正式環境到階段 8 再決定，這樣可以嗎？
+- 無
