@@ -49,7 +49,7 @@ dotnet format AgriB2B.slnx
 
 ## 開發流程
 
-每個功能都依序經過：寫規格（列出驗收條件）→ 先寫測試 → 實作到測試通過。每個 Pull Request 都要通過 GitHub Actions 的格式、建置和測試檢查才能合併。詳細原因見 [ADR-0011](docs/adr/0011-spec-first-tdd-and-ci.md)，規格放在 [docs/specs](docs/specs/README.md)。
+每個功能都依序經過：寫規格（列出驗收條件）→ 先寫測試 → 實作到測試通過 → 交給沒有對話上下文的 AI agent 審查（對照規格、找 bug）。每個 Pull Request 都要通過 GitHub Actions 的格式、建置和測試檢查才能合併。詳細原因見 [ADR-0011](docs/adr/0011-spec-first-tdd-and-ci.md)、[ADR-0012](docs/adr/0012-fresh-context-review.md)，規格放在 [docs/specs](docs/specs/README.md)。
 
 ## 專案結構
 
