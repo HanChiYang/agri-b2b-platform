@@ -1,5 +1,5 @@
 // Claude Code PreToolUse hook：不在 feature/、fix/ branch 上就不能改專案檔案或 commit，任何 branch 都不能直接 push 到 main。
-// 其餘的 commit、push 由使用者手動執行，Claude 要執行時一律跳出確認視窗。
+// 其餘的 commit、push 一律跳出確認視窗，由使用者決定是否允許。
 // 開發流程見 CLAUDE.md。
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
@@ -37,7 +37,7 @@ if (FILE_TOOLS.has(input.tool_name)) {
   }
   if (subcommands.size > 0) {
     const actions = [...subcommands].map((s) => `git ${s}`).join('、');
-    ask(`commit 與 push 由使用者手動執行。只有在使用者明確指示時，才允許 Claude 執行這個 ${actions}。`);
+    ask(`Claude 要執行 ${actions}。請確認指令內容再允許；拒絕的話，Claude 會改成把指令交給你自己執行。`);
   }
 }
 
