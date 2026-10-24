@@ -1,5 +1,7 @@
 # AgriB2B：農藥經銷 B2B 訂購平台（後端）
 
+[![CI](https://github.com/HanChiYang/agri-b2b-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/HanChiYang/agri-b2b-platform/actions/workflows/ci.yml)
+
 讓農藥經銷商在線上訂貨的 B2B 平台後端。需求、範圍與開發順序見 [docs/plan.md](docs/plan.md)，重要決策見 [docs/adr](docs/adr/README.md)。
 
 ## 需要安裝
@@ -39,11 +41,22 @@
 dotnet test
 ```
 
+建置時警告一律視為錯誤。格式不符合規則時，可以自動修正：
+
+```powershell
+dotnet format AgriB2B.slnx
+```
+
+## 開發流程
+
+每個功能都依序經過：寫規格（列出驗收條件）→ 先寫測試 → 實作到測試通過。每個 Pull Request 都要通過 GitHub Actions 的格式、建置和測試檢查才能合併。詳細原因見 [ADR-0011](docs/adr/0011-spec-first-tdd-and-ci.md)，規格放在 [docs/specs](docs/specs/README.md)。
+
 ## 專案結構
 
 ```text
 src/AgriB2B.Api/          Web API
 tests/AgriB2B.Api.Tests/  整合測試
-docs/                     開發計畫與 ADR
+docs/                     開發計畫、ADR 與功能規格
+.github/workflows/        CI
 docker-compose.yml        本機開發用的 PostgreSQL
 ```

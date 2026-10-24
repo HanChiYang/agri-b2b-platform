@@ -1,0 +1,10 @@
+<Project>
+
+  <!-- 所有專案共用的編譯檢查：警告一律視為錯誤，並啟用 .NET 建議的程式碼分析規則。說明見 docs/adr/0011 -->
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+</Project>
