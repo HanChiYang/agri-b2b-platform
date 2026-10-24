@@ -23,18 +23,28 @@
 
 ## 開發流程：規格 → 測試 → 實作（一定要遵守）
 
-每個階段或功能都照這個順序做，不可以跳步。原因見 `docs/adr/0011-spec-first-tdd-and-ci.md`、`docs/adr/0012-fresh-context-review.md`。
+每個階段或功能都照這個順序做，不可以跳步。原因見 `docs/adr/0011-spec-first-tdd-and-ci.md`、`docs/adr/0012-fresh-context-review.md`、`docs/adr/0014-changes-after-spec-confirmation.md`。
 
-1. **寫規格**：從 `docs/specs/_template.md` 複製，寫成 `docs/specs/<branch 名稱去掉 feature/>.md`，並加進 `docs/specs/README.md` 的清單。驗收條件要編號（AC-1、AC-2…）。寫完就停下來請使用者確認；**使用者同意之前，不寫測試和程式**。使用者同意後，把狀態改成「已確認」
-   - `.claude/hooks/require-confirmed-spec.mjs` 會在規格還不是「已確認」時，擋下 `src/`、`tests/` 的修改；把狀態改成「已確認」時會跳出確認視窗，由使用者決定
+1. **寫規格**：從 `docs/specs/_template.md` 複製，寫成 `docs/specs/<branch 名稱去掉 feature/>.md`，並加進 `docs/specs/README.md` 的清單。驗收條件要編號（AC-1、AC-2…）。會改變已完成規格的行為時，寫在「影響到的既有規格」。寫完就停下來請使用者確認；**使用者同意之前，不寫測試和程式**。使用者回答「待確認」的問題後，把結論寫進規格對應的段落、從「待確認」移除，再把狀態改成「已確認」
+   - `.claude/hooks/require-confirmed-spec.mjs` 會在規格還不是「已確認」時，擋下 `src/`、`tests/` 的修改。把狀態改成「已確認」時，「待確認」要先清空，並跳出確認視窗；規格確認之後的任何修改也都會跳出確認視窗，由使用者決定
 2. **先寫測試**：每條驗收條件至少對應一個整合測試，用 `[Fact(DisplayName = "AC-1：…")]` 標出編號，測試類別加上 `[Trait("Spec", "<規格檔名>")]`，例如 `[Trait("Spec", "phase-2-data-model")]`（每份規格的編號都從 AC-1 開始，要靠它區分）。寫完執行一次，確認新的測試是因為功能還沒做而失敗，不是因為測試本身寫錯。為了讓測試能編譯，可以先建立空的類別或方法
-3. **實作**：寫到全部測試通過，再執行 `dotnet format AgriB2B.slnx`。**不可以為了讓測試通過而修改或刪除測試。** 覺得測試或規格有錯，或遇到規格沒寫到的情況，先停下來問使用者；同意後先改規格，再改測試
+3. **實作**：寫到全部測試通過，再執行 `dotnet format AgriB2B.slnx`。**不可以為了讓測試通過而修改或刪除測試。** 唯一的例外是規格「影響到的既有規格」列出的測試：照新的行為修改，並一起更新舊規格的內容。覺得測試或規格有錯，或遇到規格沒寫到的情況，先停下來問使用者；同意後先改規格，再改測試
 4. **審查**：交給沒有對話上下文的 agent 做兩種審查：
    - 用 `spec-reviewer` subagent 對照規格。只告訴它規格檔的路徑，**不要附上自己的說明或判斷**
    - 執行 `/code-review` 找 bug
 
    把兩邊的結果整理給使用者，每一項說明建議修或不修、為什麼，由使用者決定要修哪些。修完重新跑測試；改動大的話再審查一次
 5. **收尾**：確認 `dotnet build`、`dotnet test` 都通過；在 `docs/plan.md` 打勾，規格狀態改成「已完成」，再 commit、push
+
+## 修 bug 的流程（一定要遵守）
+
+在 `fix/<簡短描述>` branch 上做，不用另外寫規格。
+
+1. **先重現**：寫一個會因為這個 bug 而失敗的測試，執行確認它真的失敗。測試放在相關規格的測試類別裡，沿用它的 `Trait`，`DisplayName` 標出對應的驗收條件；沒有規格的程式（例如階段 1 的骨架）不用標
+2. **規格沒寫到的情況**：找不到對應的驗收條件，表示 bug 是規格沒寫清楚或沒寫到的情況。先停下來問使用者，同意後在那份規格補上驗收條件（hook 會跳出確認視窗），測試標上新的編號
+3. **修正**：修到全部測試通過，再執行 `dotnet format AgriB2B.slnx`。一樣不可以為了讓測試通過而修改或刪除其他測試
+4. **審查**：執行 `/code-review` 找 bug；有修改規格的話，也用 `spec-reviewer` 對照那份規格
+5. **收尾**：確認 `dotnet build`、`dotnet test` 都通過，再 commit、push
 
 ## 品質檢查
 
