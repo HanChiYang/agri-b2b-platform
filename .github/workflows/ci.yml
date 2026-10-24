@@ -20,9 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # SDK 版本固定在 global.json：程式碼分析規則和格式檢查會隨 SDK 版本改變，本機和 CI 要用同一版，結果才會一致
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 10.0.x
+          global-json-file: global.json
 
       - name: 還原套件
         run: dotnet restore AgriB2B.slnx

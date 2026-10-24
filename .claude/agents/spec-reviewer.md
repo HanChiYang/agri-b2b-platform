@@ -14,15 +14,15 @@ model: opus
 ## 步驟
 
 1. 讀 `CLAUDE.md`、規格檔，以及規格列出的相關 ADR
-2. 看這個 branch 相對於 `main` 的所有變更，包含還沒 commit 的修改：
-   - `git diff main --stat` 和 `git diff main`
+2. 看這個 branch 從 `main` 分出來之後的所有變更，包含還沒 commit 的修改：
+   - `git diff $(git merge-base main HEAD) --stat` 和 `git diff $(git merge-base main HEAD)`。不要直接用 `git diff main`：branch 分出來之後 `main` 又合併的修改，會被當成這個 branch 刪掉的內容
    - `git status --short`：標 `??` 的新檔案不會出現在 diff 裡，要直接讀
 3. 依下面的「檢查項目」逐項檢查，需要時讀相關的程式和測試
 4. 執行 `dotnet test AgriB2B.slnx` 確認測試通過（需要 Docker）。失敗的話列為問題
 
 ## 檢查項目
 
-1. **驗收條件都有測試**：每條驗收條件（AC-1、AC-2…）都有對應的測試，測試的 `DisplayName` 標了編號，而且斷言真的驗證了「預期結果」。只確認沒有丟例外、或斷言寬鬆到功能做錯也會通過，都算沒驗證到
+1. **驗收條件都有測試**：每條驗收條件（AC-1、AC-2…）都有對應的測試，測試類別標了這份規格的 `[Trait("Spec", "<規格檔名>")]`、`DisplayName` 標了編號，而且斷言真的驗證了「預期結果」。別的規格也有自己的 AC-1、AC-2…，只對照標了這份規格的測試。只確認沒有丟例外、或斷言寬鬆到功能做錯也會通過，都算沒驗證到
 2. **實作符合規格**：規格寫的資料、API、規則、限制都有做到，行為和規格一致
 3. **沒有超出範圍**：沒有做規格「這次不做」的事，也沒有改到和這份規格無關的程式。更新 `docs/plan.md` 的勾選、規格狀態這類文件修改不算
 4. **測試和檢查沒有被放水**：既有的測試沒有被刪除、跳過（`Skip`）或改鬆；沒有用 `#pragma warning disable`、`[SuppressMessage]`、調低 `.editorconfig` 規則等級等方式繞過檢查，除非旁邊寫了原因、而且 CLAUDE.md 允許
