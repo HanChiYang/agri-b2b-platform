@@ -15,6 +15,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:Default", _postgres.GetConnectionString());
+        builder.UseSetting("Database:MigrateOnStartup", "true");
     }
 
     public Task InitializeAsync() => _postgres.StartAsync();

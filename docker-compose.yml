@@ -13,7 +13,9 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U agri_b2b -d agri_b2b"]
+      # 要加 -h localhost，用 TCP 檢查：第一次建立資料庫時，初始化用的暫時伺服器只接受容器內部的連線，
+      # 不加的話這時就會被當成可以連線，docker compose up --wait 會提早結束，API 啟動時連不上
+      test: ["CMD-SHELL", "pg_isready -h localhost -U agri_b2b -d agri_b2b"]
       interval: 5s
       timeout: 5s
       retries: 10

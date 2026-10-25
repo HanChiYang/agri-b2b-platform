@@ -18,13 +18,13 @@
 |---|---|---|
 | 訪客 | 未登入 | 看公司簡介、聯絡資訊 |
 | 經銷商 | 由管理員建立帳號 | 瀏覽商品與價格、下單、查詢及取消自己的訂單、修改密碼 |
-| 管理員 | 公司內部人員，可以有多位，權限都相同 | 管理經銷商、商品、分類、訂單、網站內容，以及其他管理員帳號 |
+| 管理員 | 公司內部人員，可以有多位，權限都相同 | 管理經銷商、商品、分類、訂單，以及其他管理員帳號 |
 
 ## 3. 範圍
 
 ### 第一版包含
 
-- 公司簡介、聯絡資訊（後台可編輯）
+- 公司簡介、聯絡資訊（寫死在前端，見 [ADR-0015](adr/0015-site-content-in-frontend.md)）
 - 帳號登入、修改密碼
 - 後台經銷商管理（新增、編輯、停用、重設密碼）
 - 後台管理員帳號管理（新增、編輯、停用、重設密碼）
@@ -71,9 +71,7 @@
 
 ### 5.1 網站內容（公司簡介）
 
-- 內容以代碼區分，例如 `about`（公司簡介）、`contact`（聯絡資訊）
-- 內文存 Markdown，由前端轉成畫面
-- 訪客可讀取，管理員可編輯
+- 公司簡介、聯絡資訊寫死在前端，後端不提供 API，見 [ADR-0015](adr/0015-site-content-in-frontend.md)
 
 ### 5.2 帳號與認證
 
@@ -144,16 +142,16 @@
 
 ```mermaid
 erDiagram
-    Distributor |o--|| User : "登入帳號"
-    Distributor ||--o{ Order : "下單"
-    Category ||--o{ Product : "包含"
-    Product ||--|{ ProductVariant : "包裝規格"
-    Order ||--|{ OrderItem : "明細"
-    ProductVariant ||--o{ OrderItem : "被訂購"
-    Order ||--o{ OrderStatusHistory : "狀態歷程"
-    User ||--o{ OrderStatusHistory : "操作人"
+    distributors |o--|| users : "登入帳號"
+    distributors ||--o{ orders : "下單"
+    categories ||--o{ products : "包含"
+    products ||--|{ product_variants : "包裝規格"
+    orders ||--|{ order_items : "明細"
+    product_variants ||--o{ order_items : "被訂購"
+    orders ||--o{ order_status_histories : "狀態歷程"
+    users ||--o{ order_status_histories : "操作人"
 
-    User {
+    users {
         int id PK
         string account UK "登入帳號"
         string display_name "管理員姓名或經銷商公司名稱"
@@ -166,7 +164,7 @@ erDiagram
         datetime lockout_until
         datetime last_login_at
     }
-    Distributor {
+    distributors {
         int id PK
         int user_id FK
         string company_name "公司名稱"
@@ -177,13 +175,13 @@ erDiagram
         string address
         string note "內部備註"
     }
-    Category {
+    categories {
         int id PK
         string name
         int sort_order
         bool is_active
     }
-    Product {
+    products {
         int id PK
         int category_id FK
         string name "商品名稱"
@@ -195,16 +193,16 @@ erDiagram
         string image_path "主圖"
         bool is_active
     }
-    ProductVariant {
+    product_variants {
         int id PK
         int product_id FK
         string name "規格，例如 1L"
         string sku UK "料號"
-        decimal unit_price "單價"
+        bigint unit_price "單價"
         int sort_order
         bool is_active
     }
-    Order {
+    orders {
         int id PK
         string order_no UK "訂單編號"
         int distributor_id FK
@@ -213,19 +211,19 @@ erDiagram
         string recipient_phone
         string shipping_address
         string note "經銷商備註"
-        decimal total_amount
+        bigint total_amount
     }
-    OrderItem {
+    order_items {
         int id PK
         int order_id FK
         int product_variant_id FK
         string product_name "下單時的商品名稱"
         string variant_name "下單時的規格"
-        decimal unit_price "下單時的單價"
+        bigint unit_price "下單時的單價"
         int quantity
-        decimal subtotal
+        bigint subtotal
     }
-    OrderStatusHistory {
+    order_status_histories {
         int id PK
         int order_id FK
         string from_status
@@ -233,22 +231,15 @@ erDiagram
         int changed_by FK
         string note
     }
-    SiteContent {
-        int id PK
-        string key UK "例如 about、contact"
-        string title
-        text body "Markdown"
-        int updated_by FK
-    }
 ```
 
 共通規則：
 
 - 每張資料表都有 `created_at`、`updated_at`
 - 時間一律存 UTC（`timestamptz`），顯示時再轉成台灣時間
-- 金額用 `numeric(12,2)`，C# 端用 `decimal`
+- 金額只用整數（新台幣元），資料庫用 `bigint`，C# 端用 `long`，見 [ADR-0016](adr/0016-integer-amounts.md)
 - 資料表和欄位名稱用 snake_case
-- 帳號（User）和經銷商資料（Distributor）分開存：一家經銷商對應一個帳號，管理員帳號沒有經銷商資料
+- 帳號（`users`）和經銷商資料（`distributors`）分開存：一家經銷商對應一個帳號，管理員帳號沒有經銷商資料
 - 經銷商是否停用，看對應帳號的 `users.is_active`，經銷商資料不另外存
 - 狀態歷程的變更時間就是 `created_at`，不另外存
 - 欄位長度、必填等細節見[階段 2 規格](specs/phase-2-data-model.md)
@@ -259,7 +250,6 @@ erDiagram
 
 | 方法 | 路徑 | 說明 |
 |---|---|---|
-| GET | `/api/site-contents/{key}` | 讀取網站內容（公司簡介等） |
 | POST | `/api/auth/login` | 登入 |
 
 ### 登入後共用
@@ -301,7 +291,6 @@ erDiagram
 | GET | `/api/admin/orders` | 訂單列表（狀態、經銷商、日期篩選） |
 | GET | `/api/admin/orders/{id}` | 訂單詳細資料與狀態歷程 |
 | POST | `/api/admin/orders/{id}/status` | 變更訂單狀態 |
-| PUT | `/api/admin/site-contents/{key}` | 編輯網站內容 |
 
 ## 8. 開發順序與待辦
 
@@ -328,15 +317,15 @@ erDiagram
 
 ### 階段 2：資料模型
 
-- [ ] 依第 6 節建立實體類別與 DbContext
-- [ ] 設定 snake_case 命名，`created_at`、`updated_at` 自動填入
-- [ ] 建立第一個 migration
+- [x] 依第 6 節建立實體類別與 DbContext
+- [x] 設定 snake_case 命名，`created_at`、`updated_at` 自動填入
+- [x] 建立第一個 migration
 
 完成標準：migration 可以在空的資料庫建立所有資料表。
 
 階段 2 合併之後、階段 3 開工之前，另開 branch 做：
 
-- [ ] 把寫規格的步驟寫成 Claude Code 的 skill（用內建的 `skill-creator`），附上階段 2 的規格當範例。先回顧這次寫規格時漏掉或卡住的地方，寫進 skill 的步驟。這是 [ADR-0011](adr/0011-spec-first-tdd-and-ci.md) 的計畫：流程從階段 2 開始試行，順利的話再寫成 skill
+- [ ] 把寫規格的步驟寫成 Claude Code 的 skill（用內建的 `skill-creator`），附上階段 2 的規格當範例。先回顧這次寫規格時漏掉或卡住的地方，寫進 skill 的步驟，包含「驗收條件寫真正重要的行為，不寫實作細節」（見 [ADR-0017](adr/0017-review-fix-criteria.md)）。這是 [ADR-0011](adr/0011-spec-first-tdd-and-ci.md) 的計畫：流程從階段 2 開始試行，順利的話再寫成 skill
 
 ### 階段 3：認證
 
@@ -349,6 +338,11 @@ erDiagram
 - [ ] 加入 mutation testing（Stryker.NET），檢查測試抓不抓得到改錯的程式：審查時手動執行，只跑這個 branch 改到的商業邏輯，逐一看沒被抓到的改動，不追求分數。從這個階段開始，因為階段 2 的資料表設定一改，「忘了建 migration」的測試就會失敗，分數說明不了測試好不好
 
 完成標準：管理員可以登入並呼叫後台 API；經銷商呼叫後台 API 會被拒絕。
+
+寫規格時要考慮（階段 2 審查時延後的項目）：
+
+- 帳號允許哪些字元。目前資料庫用 `lower()` 檢查只能是小寫，結果會受資料庫的語系設定影響，.NET 轉小寫的結果也可能和 PostgreSQL 不同
+- 用 `ExecuteUpdate` 更新資料（例如登入失敗次數加 1）時，`updated_at` 不會自動更新
 
 ### 階段 4：後台帳號管理
 
@@ -377,11 +371,9 @@ erDiagram
 
 完成標準：一張訂單可以從下單走到完成，也可以取消；不允許的狀態變更會被拒絕。
 
-### 階段 7：網站內容
+### 階段 7：網站內容（取消）
 
-- [ ] 公開讀取 API
-- [ ] 後台編輯 API
-- [ ] 初始資料：公司簡介、聯絡資訊
+公司簡介、聯絡資訊改成寫死在前端，見 [ADR-0015](adr/0015-site-content-in-frontend.md)。保留編號，後面階段的編號不變。
 
 ### 階段 8：部署準備
 
@@ -409,3 +401,5 @@ erDiagram
 | 8 | 前端用 React 還是 Vue | 待定，階段 9 再決定 |
 | 9 | 專案名稱 | `AgriB2B`，GitHub repo 為 `agri-b2b-platform` |
 | 10 | 部署在哪裡 | 本地雛形完成後再決定 |
+| 11 | 公司簡介、聯絡資訊是否要後台可編輯 | 不用，寫死在前端，見 [ADR-0015](adr/0015-site-content-in-frontend.md) |
+| 12 | 金額是否有小數 | 第一版只有整數（新台幣元），見 [ADR-0016](adr/0016-integer-amounts.md) |

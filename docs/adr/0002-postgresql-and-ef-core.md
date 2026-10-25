@@ -1,6 +1,6 @@
 # ADR-0002：資料庫使用 PostgreSQL，透過 EF Core 存取
 
-- 狀態：已接受
+- 狀態：已接受（「金額存 `numeric`」已被 [ADR-0016](0016-integer-amounts.md) 取代）
 - 日期：2026-10-24
 
 ## 背景

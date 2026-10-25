@@ -14,4 +14,4 @@
 
 | 規格 | 對應階段 | 狀態 |
 |---|---|---|
-| [phase-2-data-model](phase-2-data-model.md) | 階段 2：資料模型 | 已確認 |
+| [phase-2-data-model](phase-2-data-model.md) | 階段 2：資料模型 | 已完成 |

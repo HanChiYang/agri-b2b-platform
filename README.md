@@ -11,10 +11,10 @@
 
 ## 在本機執行
 
-1. 啟動資料庫：
+1. 啟動資料庫（`--wait` 會等到資料庫可以連線才結束；API 啟動時要套用 migration，資料庫還沒準備好會啟動失敗）：
 
    ```powershell
-   docker compose up -d
+   docker compose up -d --wait
    ```
 
 2. 設定連線字串（每台電腦設定一次，存在 user-secrets，不會進版控）：
@@ -23,7 +23,7 @@
    dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=agri_b2b;Username=agri_b2b;Password=agri_b2b_dev" --project src/AgriB2B.Api
    ```
 
-3. 啟動 API：
+3. 啟動 API（啟動時會自動套用還沒套用的 migration，建立或更新資料表）：
 
    ```powershell
    dotnet run --project src/AgriB2B.Api
@@ -47,6 +47,30 @@ dotnet test
 dotnet format AgriB2B.slnx
 ```
 
+## 修改資料表
+
+資料表由 EF Core 的 migration 管理。改了 `src/AgriB2B.Api/Data/` 底下的實體類別或設定之後：
+
+1. 第一次使用前，還原 EF Core 命令列工具（版本記在 `dotnet-tools.json`）：
+
+   ```powershell
+   dotnet tool restore
+   ```
+
+2. 建立 migration，會放在 `src/AgriB2B.Api/Data/Migrations/`：
+
+   ```powershell
+   dotnet ef migrations add <名稱> --project src/AgriB2B.Api
+   ```
+
+3. 修正產生的檔案的格式。EF Core 產生的 namespace 寫法不符合專案的規則，不修正會建置失敗：
+
+   ```powershell
+   dotnet format AgriB2B.slnx
+   ```
+
+忘了建立 migration 的話，測試會失敗，本機 `dotnet run` 也會啟動失敗（`appsettings.Development.json` 打開了啟動時自動套用 migration 的設定 `Database:MigrateOnStartup`）。
+
 ## 開發流程
 
 每個功能都依序經過：寫規格（列出驗收條件）→ 先寫測試 → 實作到測試通過 → 交給沒有對話上下文的 AI agent 審查（對照規格、找 bug）。每個 Pull Request 都要通過 GitHub Actions 的格式、建置和測試檢查才能合併。詳細原因見 [ADR-0011](docs/adr/0011-spec-first-tdd-and-ci.md)、[ADR-0012](docs/adr/0012-fresh-context-review.md)，規格放在 [docs/specs](docs/specs/README.md)。
@@ -59,4 +83,5 @@ tests/AgriB2B.Api.Tests/  整合測試
 docs/                     開發計畫、ADR 與功能規格
 .github/workflows/        CI
 docker-compose.yml        本機開發用的 PostgreSQL
+dotnet-tools.json         EF Core 命令列工具（dotnet ef）的版本
 ```
