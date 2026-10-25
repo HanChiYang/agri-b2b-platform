@@ -15,3 +15,4 @@
 | 規格 | 對應階段 | 狀態 |
 |---|---|---|
 | [phase-2-data-model](phase-2-data-model.md) | 階段 2：資料模型 | 已完成 |
+| [uuid-primary-keys](uuid-primary-keys.md) | 階段 2 之後：主鍵改成 UUID | 已完成 |

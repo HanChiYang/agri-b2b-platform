@@ -5,7 +5,7 @@ namespace AgriB2B.Api.Data.Entities;
 /// </summary>
 public class ProductVariant : EntityBase
 {
-    public int ProductId { get; set; }
+    public Guid ProductId { get; set; }
 
     public Product Product { get; set; } = null!;
 

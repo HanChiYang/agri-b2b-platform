@@ -26,6 +26,7 @@
 | [0015](0015-site-content-in-frontend.md) | 公司簡介、聯絡資訊寫死在前端 | 已接受 |
 | [0016](0016-integer-amounts.md) | 金額只用整數 | 已接受 |
 | [0017](0017-review-fix-criteria.md) | 審查結果只修重要的問題 | 已接受 |
+| [0018](0018-uuid-primary-keys.md) | 主鍵用 UUIDv7 | 已接受 |
 
 ## 範本
 

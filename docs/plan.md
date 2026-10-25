@@ -152,7 +152,7 @@ erDiagram
     users ||--o{ order_status_histories : "操作人"
 
     users {
-        int id PK
+        uuid id PK
         string account UK "登入帳號"
         string display_name "管理員姓名或經銷商公司名稱"
         string password_hash
@@ -165,8 +165,8 @@ erDiagram
         datetime last_login_at
     }
     distributors {
-        int id PK
-        int user_id FK
+        uuid id PK
+        uuid user_id FK
         string company_name "公司名稱"
         string tax_id "統一編號"
         string contact_name "聯絡人"
@@ -176,14 +176,14 @@ erDiagram
         string note "內部備註"
     }
     categories {
-        int id PK
+        uuid id PK
         string name
         int sort_order
         bool is_active
     }
     products {
-        int id PK
-        int category_id FK
+        uuid id PK
+        uuid category_id FK
         string name "商品名稱"
         string license_no "農藥許可證字號"
         string active_ingredient "有效成分"
@@ -194,8 +194,8 @@ erDiagram
         bool is_active
     }
     product_variants {
-        int id PK
-        int product_id FK
+        uuid id PK
+        uuid product_id FK
         string name "規格，例如 1L"
         string sku UK "料號"
         bigint unit_price "單價"
@@ -203,9 +203,9 @@ erDiagram
         bool is_active
     }
     orders {
-        int id PK
+        uuid id PK
         string order_no UK "訂單編號"
-        int distributor_id FK
+        uuid distributor_id FK
         string status
         string recipient_name
         string recipient_phone
@@ -214,9 +214,9 @@ erDiagram
         bigint total_amount
     }
     order_items {
-        int id PK
-        int order_id FK
-        int product_variant_id FK
+        uuid id PK
+        uuid order_id FK
+        uuid product_variant_id FK
         string product_name "下單時的商品名稱"
         string variant_name "下單時的規格"
         bigint unit_price "下單時的單價"
@@ -224,11 +224,11 @@ erDiagram
         bigint subtotal
     }
     order_status_histories {
-        int id PK
-        int order_id FK
+        uuid id PK
+        uuid order_id FK
         string from_status
         string to_status
-        int changed_by FK
+        uuid changed_by FK
         string note
     }
 ```
@@ -326,6 +326,7 @@ erDiagram
 階段 2 合併之後、階段 3 開工之前，另開 branch 做：
 
 - [x] 把寫規格的步驟寫成 Claude Code 的 skill（用內建的 `skill-creator`），附上階段 2 的規格當範例。先回顧這次寫規格時漏掉或卡住的地方，寫進 skill 的步驟，包含「驗收條件寫真正重要的行為，不寫實作細節」（見 [ADR-0017](adr/0017-review-fix-criteria.md)）。這是 [ADR-0011](adr/0011-spec-first-tdd-and-ci.md) 的計畫：流程從階段 2 開始試行，順利的話再寫成 skill
+- [x] 主鍵從整數改成 UUIDv7，見[規格](specs/uuid-primary-keys.md)、[ADR-0018](adr/0018-uuid-primary-keys.md)
 
 ### 階段 3：認證
 
@@ -370,6 +371,10 @@ erDiagram
 - [ ] 後台訂單列表（篩選）、詳細資料、狀態變更與歷程
 
 完成標準：一張訂單可以從下單走到完成，也可以取消；不允許的狀態變更會被拒絕。
+
+寫規格時要考慮（主鍵改成 UUID 時審查延後的項目）：
+
+- 主鍵由程式產生，先指定 id 再呼叫 `Update` 或 `Attach` 的話，EF 會當成已經存在的資料送出 UPDATE；新增資料一律用 `Add`
 
 ### 階段 7：網站內容（取消）
 

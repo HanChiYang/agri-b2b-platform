@@ -5,11 +5,11 @@ namespace AgriB2B.Api.Data.Entities;
 /// </summary>
 public class OrderItem : EntityBase
 {
-    public int OrderId { get; set; }
+    public Guid OrderId { get; set; }
 
     public Order Order { get; set; } = null!;
 
-    public int ProductVariantId { get; set; }
+    public Guid ProductVariantId { get; set; }
 
     public ProductVariant ProductVariant { get; set; } = null!;
 
