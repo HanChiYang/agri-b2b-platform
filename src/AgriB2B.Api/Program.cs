@@ -10,13 +10,19 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 
+// 目前時間一律從 TimeProvider 取得，測試可以換成固定的時間
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<TimestampInterceptor>();
+
 // 連線字串在建立 DbContext 時才讀取，整合測試才能替換成測試用的資料庫
 builder.Services.AddDbContext<AppDbContext>((services, options) =>
 {
     var connectionString = services.GetRequiredService<IConfiguration>().GetConnectionString("Default")
         ?? throw new InvalidOperationException("缺少連線字串 ConnectionStrings:Default，設定方式請見 README。");
 
-    options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
+    options.UseNpgsql(connectionString)
+        .UseSnakeCaseNamingConvention()
+        .AddInterceptors(services.GetRequiredService<TimestampInterceptor>());
 });
 
 builder.Services.AddHealthChecks()
@@ -28,6 +34,14 @@ builder.Services.AddCors(options => options.AddPolicy(FrontendCorsPolicy, policy
     .AllowAnyMethod()));
 
 var app = builder.Build();
+
+// 啟動時自動套用 migration，資料庫一定是最新結構。appsettings.Development.json 和整合測試會打開這個設定，
+// 正式環境的做法到階段 8 決定
+if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
+{
+    await using var scope = app.Services.CreateAsyncScope();
+    await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {
