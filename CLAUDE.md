@@ -26,7 +26,7 @@
 
 每個階段或功能都照這個順序做，不可以跳步。原因見 `docs/adr/0011-spec-first-tdd-and-ci.md`、`docs/adr/0012-fresh-context-review.md`、`docs/adr/0014-changes-after-spec-confirmation.md`、`docs/adr/0017-review-fix-criteria.md`。
 
-1. **寫規格**：從 `docs/specs/_template.md` 複製，寫成 `docs/specs/<branch 名稱去掉 feature/>.md`，並加進 `docs/specs/README.md` 的清單。驗收條件要編號（AC-1、AC-2…）。會改變已完成規格的行為時，寫在「影響到的既有規格」。寫完就停下來請使用者確認；**使用者同意之前，不寫測試和程式**。使用者回答「待確認」的問題後，把結論寫進規格對應的段落、從「待確認」移除，再把狀態改成「已確認」
+1. **寫規格**：用 `write-spec` skill（`.claude/skills/write-spec/SKILL.md`）寫。從 `docs/specs/_template.md` 複製，寫成 `docs/specs/<branch 名稱去掉 feature/>.md`，並加進 `docs/specs/README.md` 的清單。驗收條件要編號（AC-1、AC-2…）。會改變已完成規格的行為時，寫在「影響到的既有規格」。寫完就停下來請使用者確認；**使用者同意之前，不寫測試和程式**。使用者回答「待確認」的問題後，把結論寫進規格對應的段落、從「待確認」移除，再把狀態改成「已確認」
    - `.claude/hooks/require-confirmed-spec.mjs` 會在規格還不是「已確認」時，擋下 `src/`、`tests/` 的修改。把狀態改成「已確認」時，「待確認」要先清空，並跳出確認視窗；規格確認之後的任何修改也都會跳出確認視窗，由使用者決定
 2. **先寫測試**：每條驗收條件至少對應一個整合測試，用 `[Fact(DisplayName = "AC-1：…")]` 標出編號，測試類別加上 `[Trait("Spec", "<規格檔名>")]`，例如 `[Trait("Spec", "phase-2-data-model")]`（每份規格的編號都從 AC-1 開始，要靠它區分）。寫完執行一次，確認新的測試是因為功能還沒做而失敗，不是因為測試本身寫錯。為了讓測試能編譯，可以先建立空的類別或方法
 3. **實作**：寫到全部測試通過，再執行 `dotnet format AgriB2B.slnx`。**不可以為了讓測試通過而修改或刪除測試。** 唯一的例外是規格「影響到的既有規格」列出的測試：照新的行為修改，並一起更新舊規格的內容。覺得測試或規格有錯，或遇到規格沒寫到的情況，先停下來問使用者；同意後先改規格，再改測試

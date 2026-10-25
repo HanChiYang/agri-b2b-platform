@@ -325,7 +325,7 @@ erDiagram
 
 階段 2 合併之後、階段 3 開工之前，另開 branch 做：
 
-- [ ] 把寫規格的步驟寫成 Claude Code 的 skill（用內建的 `skill-creator`），附上階段 2 的規格當範例。先回顧這次寫規格時漏掉或卡住的地方，寫進 skill 的步驟，包含「驗收條件寫真正重要的行為，不寫實作細節」（見 [ADR-0017](adr/0017-review-fix-criteria.md)）。這是 [ADR-0011](adr/0011-spec-first-tdd-and-ci.md) 的計畫：流程從階段 2 開始試行，順利的話再寫成 skill
+- [x] 把寫規格的步驟寫成 Claude Code 的 skill（用內建的 `skill-creator`），附上階段 2 的規格當範例。先回顧這次寫規格時漏掉或卡住的地方，寫進 skill 的步驟，包含「驗收條件寫真正重要的行為，不寫實作細節」（見 [ADR-0017](adr/0017-review-fix-criteria.md)）。這是 [ADR-0011](adr/0011-spec-first-tdd-and-ci.md) 的計畫：流程從階段 2 開始試行，順利的話再寫成 skill
 
 ### 階段 3：認證
 
