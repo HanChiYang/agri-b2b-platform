@@ -40,7 +40,7 @@
 
 ### 共通規則
 
-- 主鍵 `id`：整數，由資料庫自動產生
+- 主鍵 `id`：UUIDv7（`uuid`，C# 用 `Guid`），新增時由程式自動產生，外鍵也是 `uuid`。細節見[主鍵改成 UUID 的規格](uuid-primary-keys.md)、[ADR-0018](../adr/0018-uuid-primary-keys.md)
 - 每張資料表都有 `created_at`、`updated_at`。新增時兩個都填目前時間，修改時只更新 `updated_at`，程式不用自己填
 - 時間在資料庫存 `timestamptz`（UTC），C# 用 `DateTimeOffset`；目前時間從 .NET 的 `TimeProvider` 取得，測試可以換成固定的時間
 - 時間只精確到微秒（秒後 6 位）。PostgreSQL 只存到微秒，.NET 的時間更精細，所以存檔時把所有時間欄位微秒以下的部分截掉，存檔後物件上的時間和資料庫裡的一樣

@@ -1,6 +1,5 @@
 using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,8 +15,7 @@ public partial class InitialCreate : Migration
             name: "categories",
             columns: table => new
             {
-                id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                id = table.Column<Guid>(type: "uuid", nullable: false),
                 name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                 sort_order = table.Column<int>(type: "integer", nullable: false),
                 is_active = table.Column<bool>(type: "boolean", nullable: false),
@@ -33,8 +31,7 @@ public partial class InitialCreate : Migration
             name: "users",
             columns: table => new
             {
-                id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                id = table.Column<Guid>(type: "uuid", nullable: false),
                 account = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                 display_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                 password_hash = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
@@ -60,9 +57,8 @@ public partial class InitialCreate : Migration
             name: "products",
             columns: table => new
             {
-                id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                category_id = table.Column<int>(type: "integer", nullable: false),
+                id = table.Column<Guid>(type: "uuid", nullable: false),
+                category_id = table.Column<Guid>(type: "uuid", nullable: false),
                 name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                 license_no = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                 active_ingredient = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
@@ -89,9 +85,8 @@ public partial class InitialCreate : Migration
             name: "distributors",
             columns: table => new
             {
-                id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                user_id = table.Column<int>(type: "integer", nullable: false),
+                id = table.Column<Guid>(type: "uuid", nullable: false),
+                user_id = table.Column<Guid>(type: "uuid", nullable: false),
                 company_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                 tax_id = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: true),
                 contact_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -118,9 +113,8 @@ public partial class InitialCreate : Migration
             name: "product_variants",
             columns: table => new
             {
-                id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                product_id = table.Column<int>(type: "integer", nullable: false),
+                id = table.Column<Guid>(type: "uuid", nullable: false),
+                product_id = table.Column<Guid>(type: "uuid", nullable: false),
                 name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                 sku = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                 unit_price = table.Column<long>(type: "bigint", nullable: false),
@@ -145,10 +139,9 @@ public partial class InitialCreate : Migration
             name: "orders",
             columns: table => new
             {
-                id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                id = table.Column<Guid>(type: "uuid", nullable: false),
                 order_no = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                distributor_id = table.Column<int>(type: "integer", nullable: false),
+                distributor_id = table.Column<Guid>(type: "uuid", nullable: false),
                 status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                 recipient_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                 recipient_phone = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
@@ -175,10 +168,9 @@ public partial class InitialCreate : Migration
             name: "order_items",
             columns: table => new
             {
-                id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                order_id = table.Column<int>(type: "integer", nullable: false),
-                product_variant_id = table.Column<int>(type: "integer", nullable: false),
+                id = table.Column<Guid>(type: "uuid", nullable: false),
+                order_id = table.Column<Guid>(type: "uuid", nullable: false),
+                product_variant_id = table.Column<Guid>(type: "uuid", nullable: false),
                 product_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                 variant_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                 unit_price = table.Column<long>(type: "bigint", nullable: false),
@@ -211,12 +203,11 @@ public partial class InitialCreate : Migration
             name: "order_status_histories",
             columns: table => new
             {
-                id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                order_id = table.Column<int>(type: "integer", nullable: false),
+                id = table.Column<Guid>(type: "uuid", nullable: false),
+                order_id = table.Column<Guid>(type: "uuid", nullable: false),
                 from_status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                 to_status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                changed_by = table.Column<int>(type: "integer", nullable: false),
+                changed_by = table.Column<Guid>(type: "uuid", nullable: false),
                 note = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                 created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                 updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)

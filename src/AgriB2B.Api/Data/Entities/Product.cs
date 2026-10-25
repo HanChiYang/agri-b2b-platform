@@ -5,7 +5,7 @@ namespace AgriB2B.Api.Data.Entities;
 /// </summary>
 public class Product : EntityBase
 {
-    public int CategoryId { get; set; }
+    public Guid CategoryId { get; set; }
 
     public Category Category { get; set; } = null!;
 

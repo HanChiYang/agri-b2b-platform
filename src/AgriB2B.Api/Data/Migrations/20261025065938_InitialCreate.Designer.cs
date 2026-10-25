@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AgriB2B.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261025054930_InitialCreate")]
+    [Migration("20261025065938_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,12 +27,10 @@ namespace AgriB2B.Api.Data.Migrations
 
             modelBuilder.Entity("AgriB2B.Api.Data.Entities.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -64,12 +62,10 @@ namespace AgriB2B.Api.Data.Migrations
 
             modelBuilder.Entity("AgriB2B.Api.Data.Entities.Distributor", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -118,8 +114,8 @@ namespace AgriB2B.Api.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
@@ -141,19 +137,17 @@ namespace AgriB2B.Api.Data.Migrations
 
             modelBuilder.Entity("AgriB2B.Api.Data.Entities.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("DistributorId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("DistributorId")
+                        .HasColumnType("uuid")
                         .HasColumnName("distributor_id");
 
                     b.Property<string>("Note")
@@ -219,19 +213,17 @@ namespace AgriB2B.Api.Data.Migrations
 
             modelBuilder.Entity("AgriB2B.Api.Data.Entities.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid")
                         .HasColumnName("order_id");
 
                     b.Property<string>("ProductName")
@@ -240,8 +232,8 @@ namespace AgriB2B.Api.Data.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("product_name");
 
-                    b.Property<int>("ProductVariantId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("ProductVariantId")
+                        .HasColumnType("uuid")
                         .HasColumnName("product_variant_id");
 
                     b.Property<int>("Quantity")
@@ -287,15 +279,13 @@ namespace AgriB2B.Api.Data.Migrations
 
             modelBuilder.Entity("AgriB2B.Api.Data.Entities.OrderStatusHistory", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChangedBy")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("ChangedBy")
+                        .HasColumnType("uuid")
                         .HasColumnName("changed_by");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -312,8 +302,8 @@ namespace AgriB2B.Api.Data.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("note");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid")
                         .HasColumnName("order_id");
 
                     b.Property<string>("ToStatus")
@@ -345,12 +335,10 @@ namespace AgriB2B.Api.Data.Migrations
 
             modelBuilder.Entity("AgriB2B.Api.Data.Entities.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ActiveIngredient")
                         .IsRequired()
@@ -358,8 +346,8 @@ namespace AgriB2B.Api.Data.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("active_ingredient");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid")
                         .HasColumnName("category_id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -418,12 +406,10 @@ namespace AgriB2B.Api.Data.Migrations
 
             modelBuilder.Entity("AgriB2B.Api.Data.Entities.ProductVariant", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -439,8 +425,8 @@ namespace AgriB2B.Api.Data.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid")
                         .HasColumnName("product_id");
 
                     b.Property<string>("Sku")
@@ -479,12 +465,10 @@ namespace AgriB2B.Api.Data.Migrations
 
             modelBuilder.Entity("AgriB2B.Api.Data.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Account")
                         .IsRequired()

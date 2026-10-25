@@ -21,7 +21,7 @@ public class SchemaTests(ApiFactory factory)
             "lockout_until timestamptz null",
             "last_login_at timestamptz null"),
         .. Table("distributors",
-            "user_id integer",
+            "user_id uuid",
             "company_name varchar(100)",
             "tax_id varchar(8) null",
             "contact_name varchar(50)",
@@ -34,7 +34,7 @@ public class SchemaTests(ApiFactory factory)
             "sort_order integer",
             "is_active boolean"),
         .. Table("products",
-            "category_id integer",
+            "category_id uuid",
             "name varchar(100)",
             "license_no varchar(50)",
             "active_ingredient varchar(200)",
@@ -44,7 +44,7 @@ public class SchemaTests(ApiFactory factory)
             "image_path varchar(300) null",
             "is_active boolean"),
         .. Table("product_variants",
-            "product_id integer",
+            "product_id uuid",
             "name varchar(50)",
             "sku varchar(50)",
             "unit_price bigint",
@@ -52,7 +52,7 @@ public class SchemaTests(ApiFactory factory)
             "is_active boolean"),
         .. Table("orders",
             "order_no varchar(20)",
-            "distributor_id integer",
+            "distributor_id uuid",
             "status varchar(20)",
             "recipient_name varchar(50)",
             "recipient_phone varchar(30)",
@@ -60,18 +60,18 @@ public class SchemaTests(ApiFactory factory)
             "note varchar(500) null",
             "total_amount bigint"),
         .. Table("order_items",
-            "order_id integer",
-            "product_variant_id integer",
+            "order_id uuid",
+            "product_variant_id uuid",
             "product_name varchar(100)",
             "variant_name varchar(50)",
             "unit_price bigint",
             "quantity integer",
             "subtotal bigint"),
         .. Table("order_status_histories",
-            "order_id integer",
+            "order_id uuid",
             "from_status varchar(20) null",
             "to_status varchar(20)",
-            "changed_by integer",
+            "changed_by uuid",
             "note varchar(500) null"),
     ];
 
@@ -127,7 +127,7 @@ public class SchemaTests(ApiFactory factory)
     // 每張表都有 id、created_at、updated_at，規格的表格沒有列出，這裡自動補上
     private static IEnumerable<string> Table(string name, params string[] columns)
     {
-        string[] all = ["id integer", .. columns, "created_at timestamptz", "updated_at timestamptz"];
+        string[] all = ["id uuid", .. columns, "created_at timestamptz", "updated_at timestamptz"];
         return all.Select(column => $"{name}.{column}");
     }
 }

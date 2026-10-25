@@ -5,7 +5,7 @@ namespace AgriB2B.Api.Data.Entities;
 /// </summary>
 public class OrderStatusHistory : EntityBase
 {
-    public int OrderId { get; set; }
+    public Guid OrderId { get; set; }
 
     public Order Order { get; set; } = null!;
 
@@ -15,7 +15,7 @@ public class OrderStatusHistory : EntityBase
     // 沒有預設值：忘了指定時編譯就會失敗
     public required OrderStatus ToStatus { get; set; }
 
-    public int ChangedBy { get; set; }
+    public Guid ChangedBy { get; set; }
 
     public User ChangedByUser { get; set; } = null!;
 

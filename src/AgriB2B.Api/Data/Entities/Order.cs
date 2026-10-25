@@ -7,7 +7,7 @@ public class Order : EntityBase
 {
     public required string OrderNo { get; set; }
 
-    public int DistributorId { get; set; }
+    public Guid DistributorId { get; set; }
 
     public Distributor Distributor { get; set; } = null!;
 

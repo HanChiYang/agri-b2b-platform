@@ -88,7 +88,7 @@ public class ConstraintTests(ApiFactory factory)
     [Fact(DisplayName = "AC-7：商品的分類不存在時資料庫拒絕")]
     public async Task ProductWithMissingCategory_IsRejected()
     {
-        var error = await factory.SaveRejectedAsync(TestData.NewProduct(categoryId: -1));
+        var error = await factory.SaveRejectedAsync(TestData.NewProduct(categoryId: Guid.NewGuid()));
 
         AssertRejected(error, PostgresErrorCodes.ForeignKeyViolation, "fk_products_categories_category_id");
     }

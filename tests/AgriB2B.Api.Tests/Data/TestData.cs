@@ -23,7 +23,7 @@ internal static class TestData
         SecurityStamp = "test-stamp",
     };
 
-    public static Distributor NewDistributor(int? userId = null)
+    public static Distributor NewDistributor(Guid? userId = null)
     {
         var distributor = new Distributor
         {
@@ -52,7 +52,7 @@ internal static class TestData
         SortOrder = 1,
     };
 
-    public static Product NewProduct(int? categoryId = null)
+    public static Product NewProduct(Guid? categoryId = null)
     {
         var product = new Product
         {
@@ -75,7 +75,7 @@ internal static class TestData
         return product;
     }
 
-    public static ProductVariant NewVariant(int? productId = null)
+    public static ProductVariant NewVariant(Guid? productId = null)
     {
         var variant = new ProductVariant
         {
@@ -97,7 +97,7 @@ internal static class TestData
         return variant;
     }
 
-    public static Order NewOrder(int? distributorId = null)
+    public static Order NewOrder(Guid? distributorId = null)
     {
         var order = new Order
         {
